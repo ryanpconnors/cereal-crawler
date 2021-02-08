@@ -7,9 +7,9 @@ __lua__
 
 function _init()
 	t=0
+	start_game()
 	_upd=update_game
-	_drw=draw_game
-	start_game() 
+	_drw=draw_game 
 end
 
 function _update()
@@ -22,7 +22,7 @@ function _draw()
 end
 
 function start_game()
-	player_init(007.5,010.5,⬆️)
+	player_init(007,010,⬆️)
 end
 -->8
 -- updates
@@ -71,17 +71,38 @@ p={
 	spr=nil,  --current sprite 
 	frm=nil,		--animation frame
 	dir=nil, 	--direction
-	spd=1  			--speed
+	spd=8,  		--speed
+	ox,oy=nil,nil --ani offset
 }
 
 function player_init(x,y,dir)
  p.x=x*8
 	p.y=y*8
+	p.ox=0
+	p.oy=0
 	p.dir=dir
 end
 
 function draw_player()
-	spr(get_frame(p.ani[p.dir]),p.x,p.y)
+	spr(get_frame(p.ani[p.dir]),p.x+p.ox,p.y+p.oy)
+end
+
+function animate_player()
+ if p.ox>0 then
+  p.ox-=1
+ end
+ if p.ox<0 then
+ 	p.ox+=1
+ end
+ if p.oy>0 then
+  p.oy-=1
+ end
+ if p.oy<0 then
+ 	p.oy+=1
+ end
+ if p.ox==0 and p.oy==0 then
+ 	_upd=update_game
+ end
 end
 
 function move_player()
@@ -89,18 +110,26 @@ function move_player()
 	 p.dy=-p.spd
 		p.y+=p.dy
 		p.dir=⬆️
+		p.oy=8
+		_upd=animate_player
 	elseif btnp(⬇️) then
 		p.dy=p.spd
 		p.y+=p.dy
 		p.dir=⬇️
+		p.oy=-8
+		_upd=animate_player
 	elseif btnp(⬅️) then
 		p.dx=-p.spd
 		p.x+=p.dx
 		p.dir=⬅️
+		p.ox=8
+		_upd=animate_player
 	elseif btnp(➡️) then
 		p.dx=p.spd
 		p.x+=p.dx
 		p.dir=➡️
+		p.ox=-8
+		_upd=animate_player
 	else
 		p.dx,p.dy=0,0
 	end
