@@ -13,7 +13,7 @@ function _init()
 end
 
 function _update()
- t+=1
+ t=(t+1)%30 --t per second
 	_upd()
 end
 
@@ -22,7 +22,7 @@ function _draw()
 end
 
 function start_game()
-	player_init(007.5,010.5)
+	player_init(007.5,010.5,⬆️)
 end
 -->8
 -- updates
@@ -57,44 +57,52 @@ end
 -->8
 -- player
 
-player={
-	x,y=nil,nil,
-	animations={
-		⬆️={038,039,040},
-	 ⬇️={022,023,024},
-	 ⬅️={054,055,056},
-	 ➡️={006,007,008}
+p={
+	x,y=nil,nil, 				--position
+	dx,dy=0,0, 						--movement 
+	hit_x,hit_y=0,8, --hitbox pos
+	hit_w,hit_h=7,7, --hitbox size
+	ani={												--animations
+		[⬆️]={038,039,040},
+	 [⬇️]={022,023,024},
+	 [⬅️]={054,055,056},
+	 [➡️]={006,007,008}
 	},
-	current_sprite=nil,
-	speed=1
+	spr=nil,  --current sprite 
+	frm=nil,		--animation frame
+	dir=nil, 	--direction
+	spd=1  			--speed
 }
 
-function player_init(_x,_y)
- player.x=_x*8
-	player.y=_y*8
-	player.current_sprite=player.animations.⬆️[2]
+function player_init(x,y,dir)
+ p.x=x*8
+	p.y=y*8
+	p.dir=dir
 end
 
 function draw_player()
-	spr(player.current_sprite,player.x,player.y)
+	spr(get_frame(p.ani[p.dir]),p.x,p.y)
 end
 
 function move_player()
 	if btnp(⬆️) then
-		player.y-=player.speed
-		player.current_sprite=get_frame(player.animations.⬆️)
-	end
-	if btnp(⬇️) then
-		player.y+=player.speed
-		player.current_sprite=get_frame(player.animations.⬇️)
-	end
-	if btnp(⬅️) then
-		player.x-=player.speed
-		player.current_sprite=get_frame(player.animations.⬅️)
-	end
-	if btnp(➡️) then
-		player.x+=player.speed
-		player.current_sprite=get_frame(player.animations.➡️)
+	 p.dy=-p.spd
+		p.y+=p.dy
+		p.dir=⬆️
+	elseif btnp(⬇️) then
+		p.dy=p.spd
+		p.y+=p.dy
+		p.dir=⬇️
+	elseif btnp(⬅️) then
+		p.dx=-p.spd
+		p.x+=p.dx
+		p.dir=⬅️
+	elseif btnp(➡️) then
+		p.dx=p.spd
+		p.x+=p.dx
+		p.dir=➡️
+	else
+		p.dx,p.dy=0,0
 	end
 end
 
