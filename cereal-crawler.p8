@@ -12,7 +12,7 @@ function _init()
 	_drw=draw_game 
 end
 
-function _update()
+function _update60()
  t=(t+1)%30 --t per second
 	_upd()
 end
@@ -59,28 +59,29 @@ end
 
 p={
 	x,y=nil,nil, 				--position
-	dx,dy=0,0, 						--movement 
 	hit_x,hit_y=0,8, --hitbox pos
 	hit_w,hit_h=7,7, --hitbox size
 	ani={												--animations
+		[⬅️]={054,055,056,055},
+	 [➡️]={006,007,008,007},
 		[⬆️]={038,039,040,039},
-	 [⬇️]={022,023,024,023},
-	 [⬅️]={054,055,056,055},
-	 [➡️]={006,007,008,007}
+	 [⬇️]={022,023,024,023}
 	},
 	spr=nil,  --current sprite 
 	frm=nil,		--animation frame
 	dir=nil, 	--direction
 	spd=8,  		--speed
-	ox,oy=nil,nil --ani offset
+	ox,oy=nil,nil, --ani offset
+	dx,dy=nil,nil,   
+	t=nil
 }
 
 function player_init(x,y,dir)
- p.x=x*8
-	p.y=y*8
-	p.ox=0
-	p.oy=0
+ p.x,p.y=x*8,y*8
+	p.ox,p.oy=0,0
+	p.dx,p.dy=0,0
 	p.dir=dir
+	p.t=0
 end
 
 function draw_player()
@@ -88,50 +89,31 @@ function draw_player()
 end
 
 function animate_player()
- if p.ox>0 then
-  p.ox-=1
- end
- if p.ox<0 then
- 	p.ox+=1
- end
- if p.oy>0 then
-  p.oy-=1
- end
- if p.oy<0 then
- 	p.oy+=1
- end
- if p.ox==0 and p.oy==0 then
+ p.t=min(p.t+0.125,1)
+ p.ox=p.dx*(1-p.t)
+ p.oy=p.dy*(1-p.t)
+ if p.t==1 then
  	_upd=update_game
  end
 end
 
 function move_player()
-	if btnp(⬆️) then
-	 p.dy=-p.spd
-		p.y+=p.dy
-		p.dir=⬆️
-		p.oy=8
-		_upd=animate_player
-	elseif btnp(⬇️) then
-		p.dy=p.spd
-		p.y+=p.dy
-		p.dir=⬇️
-		p.oy=-8
-		_upd=animate_player
-	elseif btnp(⬅️) then
-		p.dx=-p.spd
-		p.x+=p.dx
-		p.dir=⬅️
-		p.ox=8
-		_upd=animate_player
-	elseif btnp(➡️) then
-		p.dx=p.spd
-		p.x+=p.dx
-		p.dir=➡️
-		p.ox=-8
-		_upd=animate_player
-	else
-		p.dx,p.dy=0,0
+	d_x={-1,1,0,0}
+	d_y={0,0,-1,1}
+	
+	for i=⬅️,⬇️ do
+		if btnp(i) then
+			local dx=d_x[i+1]
+			local dy=d_y[i+1]
+			p.dir=i
+			p.x+=dx*p.spd
+			p.y+=dy*p.spd
+			p.dx,p.dy=dx*-8,dy*-8
+			p.ox,p.oy=p.dx,p.dy
+			p.t=0
+			_upd=animate_player
+			return
+		end
 	end
 end
 
@@ -142,7 +124,7 @@ end
 -- get current frame from animations array
 -- where t is the gloabl frame counter
 function get_frame(animations)
-	slowdown=8
+	slowdown=15
 	return animations[flr(t/slowdown)%#animations+1]
 end
 __gfx__
