@@ -3,7 +3,7 @@ version 30
 __lua__
 -- cereal monster
 -- rougelike dungeon crawler 
--- (c)2021 thrillho
+-- thrillho (2021)
 
 function _init()
 	t=0
@@ -70,7 +70,8 @@ function player_init(x,y,dir)
 			[⬆️]={038,039,040,039},
 	 	[⬇️]={022,023,024,023}
 	}
-	p.spr=nil  			--current sprite 
+	p.spr=nil  			--current sprite
+	p.mov=nil					--movement animation func 
 	p.frm=nil					--animation frame
 	p.dir=dir 				--direction
 	p.spd=8  					--speed
@@ -84,10 +85,9 @@ function draw_player()
 	spr(get_frame(p.ani[p.dir]),p.x+p.ox,p.y+p.oy,1,1,p.dir==⬅️,false)
 end
 
-function animate_player()
+function animate_walk()
  p.t=min(p.t+0.125,1)
- p.ox=p.dx*(1-p.t)
- p.oy=p.dy*(1-p.t)
+ p.mov()
  if p.t==1 then
  	_upd=update_game
  end
@@ -102,21 +102,34 @@ function move_player()
 			local dest_x,dest_y=flr((p.x/8)+dx),flr((p.y/8)+dy)
 			local tile=mget(dest_x,dest_y)
 			p.dir=i
-			if fget(tile,0) then
-			 -- wall
-			else
+			if fget(tile,0) then -- wall
+				p.dx,p.dy=dx*8,dy*8
+				p.ox,p.oy=0,0
+				p.t=0
+				_upd=animate_walk
+				p.mov=mov_bump
+			else -- move to next tile
 				p.x+=dx*p.spd
 				p.y+=dy*p.spd
 				p.dx,p.dy=dx*-8,dy*-8
 				p.ox,p.oy=p.dx,p.dy
 				p.t=0
-				_upd=animate_player
-				return
+				_upd=animate_walk
+				p.mov=mov_walk
 			end
 		end
 	end
 end
 
+function mov_walk()
+	p.ox=p.dx*(1-p.t)
+ p.oy=p.dy*(1-p.t)
+end
+
+function mov_bump()
+	local t = 0.5-abs(0.5 - p.t)
+ p.ox,p.oy = p.dx*t, p.dy*t
+end
 -->8
 -- helpers
 
