@@ -1,6 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 31
 __lua__
+-- main
 -- cereal monster
 -- rougelike dungeon crawler 
 -- thrillho (2021)
@@ -19,10 +20,13 @@ end
 
 function _draw()
  _drw()
+ draw_textboxes()
 end
 
 function start_game()
 	player_init(007,014,⬆️)
+	window={}
+	textbox(32,32,64,50,{"hello", "world!"})
 end
 -->8
 -- updates
@@ -135,12 +139,41 @@ end
 -->8
 -- helpers
 
-
 -- get current frame from animations array
 -- where t is the gloabl frame counter
 function get_frame(animations)
 	slowdown=12
 	return animations[flr(t/slowdown)%#animations+1]
+end
+-->8
+-- ui
+
+function textbox(_x,_y,_x2,_y2,_txt)
+	local w={
+		x=_x,
+		y=_y,
+		x2=_x2,
+		y2=_y2,
+		txt=_txt
+	}
+	add(window,w)
+	return w
+end
+
+function draw_textboxes()
+	for w in all(window) do
+		local x,y,x2,y2=w.x,w.y,w.x2,w.y2
+		rectfill(x,y,x2,y2,7) -- box
+		rectfill(x+1,y+1,x2-1,y2-1,0) --border
+		x+=4
+		y+=4
+		clip(x,y,x2-8,y2-8)
+		for i=1,#w.txt do
+			local txt=w.txt[i]
+			print(txt,x,y,7) --font is 6-px high
+			y+=6
+		end
+	end
 end
 __gfx__
 00000000000000000000000000000000000000000000000000444440000000000000000000222200000000000000000000000000000eeeeeeee0000000000000
