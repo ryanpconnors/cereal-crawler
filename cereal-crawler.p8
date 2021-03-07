@@ -26,7 +26,7 @@ end
 function start_game()
 	player_init(007,014,⬆️)
 	window={}
-	textbox(32,32,64,50,{"hello", "world!"})
+	textbox(32,32,{"hello00000","world!"})
 end
 -->8
 -- updates
@@ -148,14 +148,17 @@ end
 -->8
 -- ui
 
-function textbox(_x,_y,_x2,_y2,_txt)
+function textbox(_x,_y,_txt)
 	local w={
 		x=_x,
 		y=_y,
-		x2=_x2,
-		y2=_y2,
+		x2=0,
+		y2=_y+#_txt*6+6,
 		txt=_txt
 	}
+	for s in all(_txt) do
+		w.x2=max(w.x2,w.x+#s*4+6)
+	end
 	add(window,w)
 	return w
 end
@@ -167,7 +170,6 @@ function draw_textboxes()
 		rectfill(x+1,y+1,x2-1,y2-1,0) --border
 		x+=4
 		y+=4
-		clip(x,y,x2-8,y2-8)
 		for i=1,#w.txt do
 			local txt=w.txt[i]
 			print(txt,x,y,7) --font is 6-px high
