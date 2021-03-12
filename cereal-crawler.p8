@@ -13,7 +13,7 @@ function _init()
 end
 
 function _update60()
- t=(t+1)%30 --t per second
+ t=(t+1)%60 --t per second
 	update_game()
 	move_player()
 end
@@ -28,7 +28,7 @@ end
 function start_game()
 	init_player(007,014,⬆️)
 	
-	-- Text Box
+	--text box
 	--window={}
 	--textbox(32,32,{"hello00000","world!"})
 end
@@ -68,8 +68,9 @@ end
 function init_player(x,y,dir)
 	p={}
 	p.x,p.y=x*8,y*8 				--position
-	p.hit_x,p.hit_y=0,8 --hitbox pos
-	p.hit_w,p.hit_h=7,7 --hitbox size
+	p.dx,p.dy=0,0 						--movement
+	p.cx,p.cy=0,4 						--hitbox pos
+	p.cw,p.ch=6,3 						--hitbox size
 	p.ani={													--animations
 			[⬅️]={006,007},
 	 	[➡️]={006,007},
@@ -77,8 +78,8 @@ function init_player(x,y,dir)
 	 	[⬇️]={022,023}
 	}
 	p.dir=dir 											--direction
-	p.t,p.f,p.stp=0,2,12 --animation vars
- p.spd=1 													--speed
+	p.t,p.f,p.stp=0,2,16 --animation vars
+ p.spd=0.75 										--speed
 end
 
 function draw_player()
@@ -86,22 +87,27 @@ function draw_player()
 end
 
 function move_player()
- if btn(⬅️) then
-		p.x-=p.spd
-		p.dir=⬅️
+	if btn(⬅️) then
+		p.dx-=p.spd
+		p.dir=⬅️		
 	elseif btn(➡️) then
-	 p.x+=p.spd
+	 p.dx+=p.spd
 	 p.dir=➡️
 	elseif btn(⬆️) then
-	 p.y-=p.spd
+	 p.dy-=p.spd
 	 p.dir=⬆️
 	elseif btn(⬇️) then
-	 p.y+=p.spd
+	 p.dy+=p.spd
 	 p.dir=⬇️
 	end
-	if btn()>0 then
-		anim_player_walk()
-	end 
+	if btn()>0 then 
+	 anim_player_walk()
+	end
+	if can_move(p.x+p.cx+p.dx,p.y+p.cy+p.dy,p.cw,p.ch) then
+		p.x+=p.dx
+		p.y+=p.dy
+	end
+	p.dx,p.dy=0,0
 end
 
 function anim_player_walk()
@@ -112,15 +118,22 @@ function anim_player_walk()
 	end
 end
 
--->8
--- helpers
-
--- get current frame from animations array
--- where t is the gloabl frame counter
-function get_frame(animations)
-	slowdown=12
-	return animations[flr(t/slowdown)%#animations+1]
+function can_move(x,y,w,h)
+ local ok=true
+		x1,y1=flr(x/8),flr(y/8)
+  x2,y2=flr((x+w)/8),
+  flr((y+h)/8)
+  if (fg(x1,y1)!=0 or fg(x2,y1)!=0 or fg(x2,y2)!=0 or fg(x1,y2)!=0) then
+			ok=false
+		end
+		return ok
 end
+
+--simple map flag shortcut
+function fg(x,y)
+	return fget(mget(x,y)) 
+end
+
 -->8
 -- ui
 
@@ -153,6 +166,7 @@ function draw_textboxes()
 		end
 	end
 end
+
 __gfx__
 00000000000000000000000000000000000000000000000000444440000000000000000000222200000000000000000000000000000eeeeeeee0000000000000
 0000000007700770077007700000000000000000000000000444f3f0004444400000000002eeee2000000000000000000000000080e222ee222e088000000000
