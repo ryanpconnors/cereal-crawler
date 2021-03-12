@@ -4,49 +4,51 @@ __lua__
 -- main
 -- cereal monster
 -- rougelike dungeon crawler 
--- thrillho (2021)
+-- thrillho .2021
 
 function _init()
 	t=0
+	tile_size=8
 	start_game()
-	_upd=update_game
-	_drw=draw_game 
 end
 
 function _update60()
  t=(t+1)%30 --t per second
-	_upd()
+	update_game()
+	move_player()
 end
 
 function _draw()
- _drw()
- draw_textboxes()
+	cls(0)
+	draw_map()
+ draw_player()
+ --draw_textboxes()
 end
 
 function start_game()
-	player_init(007,014,⬆️)
-	window={}
-	textbox(32,32,{"hello00000","world!"})
+	init_player(007,014,⬆️)
+	
+	-- Text Box
+	--window={}
+	--textbox(32,32,{"hello00000","world!"})
 end
+
 -->8
 -- updates
 
 function update_game()
-	if btnp()>0 then
-		move_player()
-	end
 	if hp == 0 then
-		_upd=update_game_over
+		update_game_over()
 	end
 end
 
 function update_game_over()
 	return true
 end
+
 -->8
 -- draws
 function draw_game()
-	-- clear the screen (black)
  cls(0)
  draw_map()
  draw_player()
@@ -57,15 +59,15 @@ function draw_game_over()
 end
 
 function draw_map()
-	-- draw the map at (0,0)
 	map(000,000)
 end
+
 -->8
 -- player
 
-function player_init(x,y,dir)
+function init_player(x,y,dir)
 	p={}
-	p.x,p.y=nil,nil 				--position
+	p.x,p.y=x*8,y*8 				--position
 	p.hit_x,p.hit_y=0,8 --hitbox pos
 	p.hit_w,p.hit_h=7,7 --hitbox size
 	p.ani={													--animations
@@ -74,68 +76,42 @@ function player_init(x,y,dir)
 			[⬆️]={038,039},
 	 	[⬇️]={022,023}
 	}
-	p.spr=nil  			--current sprite
-	p.mov=nil					--movement animation func 
-	p.frm=nil					--animation frame
-	p.dir=dir 				--direction
-	p.spd=8  					--speed
-	p.t=0         --ani timer
-	p.ox,p.oy=0,0 --ani offset
-	p.dx,p.dy=0,0 --position delta 
- p.x,p.y=x*8,y*8
+	p.dir=dir 											--direction
+	p.t,p.f,p.stp=0,2,12 --animation vars
+ p.spd=1 													--speed
 end
 
 function draw_player()
-	spr(get_frame(p.ani[p.dir]),p.x+p.ox,p.y+p.oy,1,1,p.dir==⬅️,false)
-end
-
-function animate_walk()
- p.t=min(p.t+0.125,1)
- p.mov()
- if p.t==1 then
- 	_upd=update_game
- end
+	spr(p.ani[p.dir][p.f],p.x,p.y,1,1,p.dir==⬅️)
 end
 
 function move_player()
-	local d_x={-1,1,0,0}
-	local d_y={0,0,-1,1}
-	for i=⬅️,⬇️ do
-		if btnp(i) then
-			local dx,dy=d_x[i+1],d_y[i+1]
-			local dest_x,dest_y=flr((p.x/8)+dx),flr((p.y/8)+dy)
-			local tile=mget(dest_x,dest_y)
-			p.dir=i
-			if fget(tile,0) then -- wall
-				p.dx,p.dy=dx*8,dy*8
-				p.ox,p.oy=0,0
-				p.t=0
-				_upd=animate_walk
-				p.mov=mov_bump
-				sfx(01)
-			else -- move to next tile
-				p.x+=dx*p.spd
-				p.y+=dy*p.spd
-				p.dx,p.dy=dx*-8,dy*-8
-				p.ox,p.oy=p.dx,p.dy
-				p.t=0
-				_upd=animate_walk
-				p.mov=mov_walk
-				sfx(00)
-			end
-		end
+ if btn(⬅️) then
+		p.x-=p.spd
+		p.dir=⬅️
+	elseif btn(➡️) then
+	 p.x+=p.spd
+	 p.dir=➡️
+	elseif btn(⬆️) then
+	 p.y-=p.spd
+	 p.dir=⬆️
+	elseif btn(⬇️) then
+	 p.y+=p.spd
+	 p.dir=⬇️
+	end
+	if btn()>0 then
+		anim_player_walk()
+	end 
+end
+
+function anim_player_walk()
+	p.t=(p.t+1)%p.stp
+	if p.t==0 then 
+		p.f=p.f%#p.ani[p.dir]+1
+	 p.t=1
 	end
 end
 
-function mov_walk()
-	p.ox=p.dx*(1-p.t)
- p.oy=p.dy*(1-p.t)
-end
-
-function mov_bump()
-	local t = 0.5-abs(0.5 - p.t)
- p.ox,p.oy = p.dx*t, p.dy*t
-end
 -->8
 -- helpers
 
