@@ -88,7 +88,6 @@ end
 
 function move_player()
  if btn(⬆️) and btn(⬇️) or btn(⬅️) and btn(➡️) then return end
- -- todo: add check for y+x dir to allow horizontal wall strafing
 	if btn(⬆️) then
 	 p.dy-=p.spd
 	 p.dir=⬆️
@@ -102,13 +101,33 @@ function move_player()
 	 p.dx+=p.spd
 	 p.dir=➡️
 	end
+	
 	if btn()>0 then 
 	 anim_player_walk()
 	end
+	
 	if can_move(p.x+p.cx+p.dx,p.y+p.cy+p.dy,p.cw,p.ch) then
 		p.x+=p.dx
 		p.y+=p.dy
-	end
+	end 
+	
+	if (btn(⬆️) or btn(⬇️)) and (btn(⬅️) or btn(➡️)) and not can_move(p.x,p.y+p.cy+p.dy,p.cw,p.ch) then
+		if btn(⬅️) then
+			p.dx-=p.spd
+			p.dir=⬅️
+ 	elseif btn(➡️) then
+	 	p.dx+=p.spd
+	 	p.dir=➡️
+		end
+		if can_move(p.x+p.cx+p.dx,p.y+4,p.cw,p.ch) then
+		 p.x+=p.dx
+		 if btn(⬅️) then
+			 p.dir=⬅️	
+ 		elseif btn(➡️) then
+	 	 p.dir=➡️
+			end
+		end
+	end 
 	p.dx,p.dy=0,0
 end
 
