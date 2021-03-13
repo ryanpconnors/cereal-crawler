@@ -67,7 +67,7 @@ end
 
 function init_player(x,y,dir)
 	p={}
-	p.x,p.y=x*8,y*8 				--position
+	p.x,p.y=x*tile_size,y*tile_size 				--position
 	p.cx,p.cy=0,4 						--hitbox pos
 	p.cw,p.ch=6,3 						--hitbox size
 	p.ani={													--animations
@@ -139,9 +139,9 @@ end
 
 function can_move(x,y,w,h)
  local ok=true
-	x1,y1=flr(x/8),flr(y/8)
- x2,y2=flr((x+w)/8),
- flr((y+h)/8)
+	x1,y1=flr(x/tile_size),flr(y/tile_size)
+ x2,y2=flr((x+w)/tile_size),
+ flr((y+h)/tile_size)
  if flag(x1,y1)!=0 or flag(x2,y1)!=0 or flag(x2,y2)!=0 or flag(x1,y2)!=0 then
 		ok=false
 	end
