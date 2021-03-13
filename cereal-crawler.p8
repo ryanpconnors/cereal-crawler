@@ -76,9 +76,9 @@ function init_player(x,y,dir)
 			[⬆️]={038,039},
 	 	[⬇️]={022,023}
 	}
-	p.dir=dir 											--direction
+	p.dir=dir 										--direction
 	p.t,p.f,p.stp=0,2,8 --animation vars
- p.spd=0.7 										 --speed
+ p.spd=0.7 										--speed
 end
 
 function draw_player()
@@ -87,7 +87,10 @@ end
 
 function move_player()
  local dx,dy=0,0
+ 
+ --guard opposite directions
  if btn(⬆️) and btn(⬇️) or btn(⬅️) and btn(➡️) then return end
+	
 	if btn(⬆️) then
 	 dy-=p.spd
 	 p.dir=⬆️
@@ -103,7 +106,7 @@ function move_player()
 	end
 	
 	if btn()>0 then 
-	 anim_player_walk()
+		anim_player_walk()
 	end
 	
 	if can_move(p.x+p.cx+dx,p.y+p.cy+dy,p.cw,p.ch) then
@@ -111,24 +114,19 @@ function move_player()
 		p.y+=dy
 	end 
 	
+	-- horizontal wall strafing
 	if (btn(⬆️) or btn(⬇️)) and (btn(⬅️) or btn(➡️)) and not can_move(p.x,p.y+p.cy+dy,p.cw,p.ch) then
 		if btn(⬅️) then
-			dx-=p.spd
-			p.dir=⬅️
+		 dx-=p.spd
+		 p.dir=⬅️
  	elseif btn(➡️) then
-	 	dx+=p.spd
-	 	p.dir=➡️
+	  dx+=p.spd
+	  p.dir=➡️
 		end
-		if can_move(p.x+p.cx+dx,p.y+4,p.cw,p.ch) then
+		if can_move(p.x+p.cx+dx,p.y+p.cy,p.cw,p.ch) then
 		 p.x+=dx
-		 if btn(⬅️) then
-			 p.dir=⬅️	
- 		elseif btn(➡️) then
-	 	 p.dir=➡️
-			end
 		end
 	end 
-	dx,dy=0,0
 end
 
 function anim_player_walk()
@@ -144,14 +142,14 @@ function can_move(x,y,w,h)
 	x1,y1=flr(x/8),flr(y/8)
  x2,y2=flr((x+w)/8),
  flr((y+h)/8)
- if (fg(x1,y1)!=0 or fg(x2,y1)!=0 or fg(x2,y2)!=0 or fg(x1,y2)!=0) then
+ if flag(x1,y1)!=0 or flag(x2,y1)!=0 or flag(x2,y2)!=0 or flag(x1,y2)!=0 then
 		ok=false
 	end
 	return ok
 end
 
---simple map flag shortcut
-function fg(x,y)
+--map flag helper
+function flag(x,y)
 	return fget(mget(x,y)) 
 end
 
