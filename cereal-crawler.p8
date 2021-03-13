@@ -1,10 +1,9 @@
 pico-8 cartridge // http://www.pico-8.com
 version 31
 __lua__
--- main
 -- cereal monster
 -- rougelike dungeon crawler 
--- thrillho .2021
+-- thrillho (2021)
 
 function _init()
 	t=0
