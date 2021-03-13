@@ -78,8 +78,8 @@ function init_player(x,y,dir)
 	 	[⬇️]={022,023}
 	}
 	p.dir=dir 											--direction
-	p.t,p.f,p.stp=0,2,16 --animation vars
- p.spd=0.5 										 --speed
+	p.t,p.f,p.stp=0,2,8 --animation vars
+ p.spd=0.7 										 --speed
 end
 
 function draw_player()
@@ -87,18 +87,20 @@ function draw_player()
 end
 
 function move_player()
-	if btn(⬅️) then
-		p.dx-=p.spd
-		p.dir=⬅️		
-	elseif btn(➡️) then
-	 p.dx+=p.spd
-	 p.dir=➡️
-	elseif btn(⬆️) then
+ if btn(⬆️) and btn(⬇️) or btn(⬅️) and btn(➡️) then return end
+ -- todo: add check for y+x dir to allow horizontal wall strafing
+	if btn(⬆️) then
 	 p.dy-=p.spd
 	 p.dir=⬆️
 	elseif btn(⬇️) then
 	 p.dy+=p.spd
 	 p.dir=⬇️
+	elseif btn(⬅️) then
+		p.dx-=p.spd
+		p.dir=⬅️	
+ elseif btn(➡️) then
+	 p.dx+=p.spd
+	 p.dir=➡️
 	end
 	if btn()>0 then 
 	 anim_player_walk()
