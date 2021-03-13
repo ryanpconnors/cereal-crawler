@@ -79,7 +79,7 @@ function init_player(x,y,dir)
 	}
 	p.dir=dir 											--direction
 	p.t,p.f,p.stp=0,2,16 --animation vars
- p.spd=0.75 										--speed
+ p.spd=0.5 										 --speed
 end
 
 function draw_player()
@@ -120,13 +120,13 @@ end
 
 function can_move(x,y,w,h)
  local ok=true
-		x1,y1=flr(x/8),flr(y/8)
-  x2,y2=flr((x+w)/8),
-  flr((y+h)/8)
-  if (fg(x1,y1)!=0 or fg(x2,y1)!=0 or fg(x2,y2)!=0 or fg(x1,y2)!=0) then
-			ok=false
-		end
-		return ok
+	x1,y1=flr(x/8),flr(y/8)
+ x2,y2=flr((x+w)/8),
+ flr((y+h)/8)
+ if (fg(x1,y1)!=0 or fg(x2,y1)!=0 or fg(x2,y2)!=0 or fg(x1,y2)!=0) then
+		ok=false
+	end
+	return ok
 end
 
 --simple map flag shortcut
