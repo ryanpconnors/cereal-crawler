@@ -68,7 +68,6 @@ end
 function init_player(x,y,dir)
 	p={}
 	p.x,p.y=x*8,y*8 				--position
-	p.dx,p.dy=0,0 						--movement
 	p.cx,p.cy=0,4 						--hitbox pos
 	p.cw,p.ch=6,3 						--hitbox size
 	p.ani={													--animations
@@ -87,18 +86,19 @@ function draw_player()
 end
 
 function move_player()
+ local dx,dy=0,0
  if btn(⬆️) and btn(⬇️) or btn(⬅️) and btn(➡️) then return end
 	if btn(⬆️) then
-	 p.dy-=p.spd
+	 dy-=p.spd
 	 p.dir=⬆️
 	elseif btn(⬇️) then
-	 p.dy+=p.spd
+	 dy+=p.spd
 	 p.dir=⬇️
 	elseif btn(⬅️) then
-		p.dx-=p.spd
+		dx-=p.spd
 		p.dir=⬅️	
  elseif btn(➡️) then
-	 p.dx+=p.spd
+	 dx+=p.spd
 	 p.dir=➡️
 	end
 	
@@ -106,21 +106,21 @@ function move_player()
 	 anim_player_walk()
 	end
 	
-	if can_move(p.x+p.cx+p.dx,p.y+p.cy+p.dy,p.cw,p.ch) then
-		p.x+=p.dx
-		p.y+=p.dy
+	if can_move(p.x+p.cx+dx,p.y+p.cy+dy,p.cw,p.ch) then
+		p.x+=dx
+		p.y+=dy
 	end 
 	
-	if (btn(⬆️) or btn(⬇️)) and (btn(⬅️) or btn(➡️)) and not can_move(p.x,p.y+p.cy+p.dy,p.cw,p.ch) then
+	if (btn(⬆️) or btn(⬇️)) and (btn(⬅️) or btn(➡️)) and not can_move(p.x,p.y+p.cy+dy,p.cw,p.ch) then
 		if btn(⬅️) then
-			p.dx-=p.spd
+			dx-=p.spd
 			p.dir=⬅️
  	elseif btn(➡️) then
-	 	p.dx+=p.spd
+	 	dx+=p.spd
 	 	p.dir=➡️
 		end
-		if can_move(p.x+p.cx+p.dx,p.y+4,p.cw,p.ch) then
-		 p.x+=p.dx
+		if can_move(p.x+p.cx+dx,p.y+4,p.cw,p.ch) then
+		 p.x+=dx
 		 if btn(⬅️) then
 			 p.dir=⬅️	
  		elseif btn(➡️) then
@@ -128,7 +128,7 @@ function move_player()
 			end
 		end
 	end 
-	p.dx,p.dy=0,0
+	dx,dy=0,0
 end
 
 function anim_player_walk()
