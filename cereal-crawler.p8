@@ -68,9 +68,9 @@ end
 function init_player(x,y,dir)
 	p={}
 	p.x,p.y=x*tile_size,y*tile_size --position
-	p.cx,p.cy=0,4 						--hitbox pos
-	p.cw,p.ch=6,3 						--hitbox size
-	p.ani={													--animations
+	p.cx,p.cy=0,4       --hitbox pos
+	p.cw,p.ch=6,3       --hitbox size
+	p.ani={							      --animations
 			[⬅️]={006,007},
 	 	[➡️]={006,007},
 			[⬆️]={038,039},
@@ -111,13 +111,15 @@ function move_player()
 		anim_player_walk()
 	end
 	
-	if can_move(p.x+p.cx+dx,p.y+p.cy+dy,p.cw,p.ch) then
+	if can_move(p.x+p.cx+dx,p.y+p.cy+dy,p.cw,p.ch) 
+	then
 		p.x+=dx
 		p.y+=dy
 	end 
 	
 	-- horizontal wall strafing
-	if (btn(⬆️) or btn(⬇️)) and (btn(⬅️) or btn(➡️)) and not can_move(p.x,p.y+p.cy+dy,p.cw,p.ch) then
+	if (btn(⬆️) or btn(⬇️)) and (btn(⬅️) or btn(➡️)) 
+	and not can_move(p.x,p.y+p.cy+dy,p.cw,p.ch) then
 		if btn(⬅️) then
 		 dx-=p.spd
 		 p.dir=⬅️
