@@ -23,15 +23,11 @@ function _draw()
 	draw_map()
 	print('-life-',0*8+2,1*8+2,8)
  draw_player()
- --draw_textboxes()
+ show_message({"hello","world!"})
 end
 
 function start_game()
 	init_player(007,014,⬆️)
-	
-	--text box
-	--window={}
-	--textbox(32,32,{"hello00000","world!"})
 end
 
 -->8
@@ -160,36 +156,41 @@ end
 -->8
 -- ui
 
-function textbox(_x,_y,_txt)
-	local w={
-		x=_x,
-		y=_y,
-		x2=0,
-		y2=_y+#_txt*6+6,
-		txt=_txt
+function get_textbox(txt)
+	local w,h,win=0,0,{
+	 x=0,
+		txt=txt
 	}
-	for s in all(_txt) do
-		w.x2=max(w.x2,w.x+#s*4+6)
+	for str in all(txt) do
+		w=max(w,#str*4+6)
 	end
-	add(window,w)
-	return w
+	h=#txt*6+6
+	win.x=64-w/2
+	win.x2=64+w/2
+	win.y=64-h/2
+	win.y2=64+h/2
+	return win
 end
 
-function draw_textboxes()
-	for w in all(window) do
-		local x,y,x2,y2=w.x,w.y,w.x2,w.y2
-		rectfill(x,y,x2,y2,7) -- box
-		rectfill(x+1,y+1,x2-1,y2-1,0) --border
-		x+=4
-		y+=4
-		for i=1,#w.txt do
-			local txt=w.txt[i]
-			print(txt,x,y,7) --font is 6-px high
-			y+=6
+function draw_textbox(win)
+	local x,y,x2,y2,txt=win.x,win.y,win.x2,win.y2,win.txt
+	rectfill(x,y,x2,y2,7) -- box
+	rectfill(x+1,y+1,x2-1,y2-1,0) --border
+	x+=4
+	y+=4
+	for i=1,#txt do
+		local str=txt[i]
+		for c=1,#str do
+			-- todo: print char by char
+			print(sub(str,c,c),x+(c-1)*4,y,7)
 		end
+		y+=6
 	end
 end
 
+function show_message(txt,dur)
+	draw_textbox(get_textbox(txt))
+end
 __gfx__
 00000000000000000000000000000000000000000000000000444440000000000000000000222200000000000000000000000000000eeeeeeee0000000000000
 0000000007700770077007700000000000000000000000000444f3f0004444400000000002eeee2000000000000000000000000080e222ee222e088000000000
