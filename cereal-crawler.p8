@@ -23,7 +23,7 @@ function _draw()
 	draw_map()
 	print('-life-',0*8+2,1*8+2,8)
  draw_player()
- show_message({"hello","world!"})
+ show_message({"hello","world!","dfsdfdsfdsfdfdsf","testetre"})
 end
 
 function start_game()
@@ -162,9 +162,9 @@ function get_textbox(txt)
 		txt=txt
 	}
 	for str in all(txt) do
-		w=max(w,#str*4+6)
+		w=max(w,#str*4+10)
 	end
-	h=#txt*6+6
+	h=#txt*6+8
 	win.x=64-w/2
 	win.x2=64+w/2
 	win.y=64-h/2
@@ -174,10 +174,11 @@ end
 
 function draw_textbox(win)
 	local x,y,x2,y2,txt=win.x,win.y,win.x2,win.y2,win.txt
-	rectfill(x,y,x2,y2,7) -- box
-	rectfill(x+1,y+1,x2-1,y2-1,0) --border
-	x+=4
-	y+=4
+	rectfill(x,y,x2,y2,0) -- outer frame 
+	rectfill(x+1,y+1,x2-1,y2-1,7) -- inner frame
+	rectfill(x+2,y+2,x2-2,y2-2,0) --box
+	x+=6
+	y+=5
 	for i=1,#txt do
 		local str=txt[i]
 		for c=1,#str do
