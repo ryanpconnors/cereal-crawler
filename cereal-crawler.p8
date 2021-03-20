@@ -6,14 +6,17 @@ __lua__
 -- rougelike dungeon crawler 
 -- thrillho .2021
 
+_message={txt,dur=nil,nil}
+_t=nil
+_tile_size=8
+
 function _init()
-	t=0
-	tile_size=8
+	_t=0
 	start_game()
 end
 
 function _update60()
- t=(t+1)%60 --t per second
+ _t=(_t+1)%60 --t per second
 	update_game()
 	move_player()
 end
@@ -23,11 +26,12 @@ function _draw()
 	draw_map()
 	print('-life-',0*8+2,1*8+2,8)
  draw_player()
- show_message({"hello","world!","dfsdfdsfdsfdfdsf","testetre"})
+ draw_message()
 end
 
 function start_game()
 	init_player(007,014,⬆️)
+	_message={txt=get_textbox({"hello","world!"}),dur=5*60}
 end
 
 -->8
@@ -59,12 +63,23 @@ function draw_map()
 	map(000,000)
 end
 
+function draw_message()
+ if _message.txt != nil and _message.dur != nil then
+  textbox=_message.txt
+  if _message.dur >=0 then
+   draw_textbox(textbox)
+   _message.dur-=1
+  else 
+   _message={}
+  end
+ end
+end
 -->8
 -- player
 
 function init_player(x,y,dir)
 	p={}
-	p.x,p.y=x*tile_size,y*tile_size --position
+	p.x,p.y=x*_tile_size,y*_tile_size --position
 	p.cx,p.cy=0,4       --hitbox pos
 	p.cw,p.ch=6,3       --hitbox size
 	p.ani={							      --animations
@@ -140,9 +155,9 @@ end
 
 function can_move(x,y,w,h)
  local ok=true
-	x1,y1=flr(x/tile_size),flr(y/tile_size)
- x2,y2=flr((x+w)/tile_size),
- flr((y+h)/tile_size)
+	x1,y1=flr(x/_tile_size),flr(y/_tile_size)
+ x2,y2=flr((x+w)/_tile_size),
+ flr((y+h)/_tile_size)
  if flag(x1,y1)!=0 or flag(x2,y1)!=0 or flag(x2,y2)!=0 or flag(x1,y2)!=0 then
 		ok=false
 	end
@@ -189,9 +204,6 @@ function draw_textbox(win)
 	end
 end
 
-function show_message(txt,dur)
-	draw_textbox(get_textbox(txt))
-end
 __gfx__
 00000000000000000000000000000000000000000000000000444440000000000000000000222200000000000000000000000000000eeeeeeee0000000000000
 0000000007700770077007700000000000000000000000000444f3f0004444400000000002eeee2000000000000000000000000080e222ee222e088000000000
