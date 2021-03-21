@@ -6,7 +6,7 @@ __lua__
 -- rougelike dungeon crawler 
 -- thrillho .2021
 
-_message={txt,dur=nil,nil}
+_message={txt,t=nil,nil}
 _t=nil
 _tile_size=8
 
@@ -31,7 +31,10 @@ end
 
 function start_game()
 	init_player(007,014,⬆️)
-	_message={txt=get_textbox({"hello","world!"}),dur=5*60}
+	_message = {
+		txt=get_textbox({"hello","world!"}),
+		t=5*60
+	}
 end
 
 -->8
@@ -64,13 +67,20 @@ function draw_map()
 end
 
 function draw_message()
- if _message.txt != nil and _message.dur != nil then
-  textbox=_message.txt
-  if _message.dur >=0 then
-   draw_textbox(textbox)
-   _message.dur-=1
-  else 
-   _message={}
+ if _message.txt!=nil then
+  if _message.t!=nil then
+   _message.t-=1
+   local diff=(_message.txt.y2-_message.txt.y)/8
+	  if _message.t<0 then
+	   _message.txt.txt={}
+	  	_message.txt.y+=diff/4
+	  	_message.txt.y2-=diff
+	  end
+	  if diff>2 then
+	   draw_textbox(_message.txt)	
+	  else
+    _message={}
+   end
   end
  end
 end
