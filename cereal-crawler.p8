@@ -6,7 +6,7 @@ __lua__
 -- rougelike dungeon crawler 
 -- thrillho .2021
 
-_message={txt,t=nil,nil}
+_message={box,t=nil,nil}
 _t=nil
 _tile_size=8
 
@@ -24,7 +24,7 @@ end
 function _draw()
 	cls(0)
 	draw_map()
-	print('-life-',0*8+2,1*8+2,8)
+	draw_hud()
  draw_player()
  draw_message()
 end
@@ -32,7 +32,7 @@ end
 function start_game()
 	init_player(007,014,⬆️)
 	_message = {
-		txt=get_textbox({"hello","world!"}),
+		box=get_textbox({"hello","world!"}),
 		t=5*60
 	}
 end
@@ -66,18 +66,22 @@ function draw_map()
 	map(000,000)
 end
 
+function draw_hud()
+ print('-life-',0*8+2,1*8+2,8)
+end
+
 function draw_message()
- if _message.txt!=nil then
+ if _message.box!=nil then
   if _message.t!=nil then
    _message.t-=1
-   local diff=(_message.txt.y2-_message.txt.y)/8
+   local diff=(_message.box.y2-_message.box.y)/8
 	  if _message.t<0 then
-	   _message.txt.txt={}
-	  	_message.txt.y+=diff/4
-	  	_message.txt.y2-=diff
+	   _message.box.txt={}
+	  	_message.box.y+=diff/4
+	  	_message.box.y2-=diff
 	  end
 	  if diff>2 then
-	   draw_textbox(_message.txt)	
+	   draw_textbox(_message.box)	
 	  else
     _message={}
    end
@@ -182,7 +186,7 @@ end
 -- ui
 
 function get_textbox(txt)
-	local w,h,win=0,0,{
+	local w,h,box=0,0,{
 	 x=0,
 		txt=txt
 	}
@@ -190,15 +194,15 @@ function get_textbox(txt)
 		w=max(w,#str*4+10)
 	end
 	h=#txt*6+8
-	win.x=64-w/2
-	win.x2=64+w/2
-	win.y=64-h/2
-	win.y2=64+h/2
-	return win
+	box.x=64-w/2
+	box.x2=64+w/2
+	box.y=64-h/2
+	box.y2=64+h/2
+	return box
 end
 
-function draw_textbox(win)
-	local x,y,x2,y2,txt=win.x,win.y,win.x2,win.y2,win.txt
+function draw_textbox(box)
+	local x,y,x2,y2,txt=box.x,box.y,box.x2,box.y2,box.txt
 	rectfill(x,y,x2,y2,0) -- outer frame 
 	rectfill(x+1,y+1,x2-1,y2-1,7) -- inner frame
 	rectfill(x+2,y+2,x2-2,y2-2,0) --box
