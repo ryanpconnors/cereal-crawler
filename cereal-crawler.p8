@@ -6,7 +6,7 @@ __lua__
 -- rougelike dungeon crawler 
 -- thrillho .2021
 
-_message={box,t=nil,nil}
+_message=nil
 _t=nil
 _tile_size=8
 
@@ -18,7 +18,6 @@ end
 function _update60()
  _t=(_t+1)%60 --t per second
 	update_game()
-	move_player()
 end
 
 function _draw()
@@ -32,8 +31,8 @@ end
 function start_game()
 	init_player(007,014,⬆️)
 	_message = {
-		box=get_textbox({"hello","world!"}),
-		t=5*60
+		box=get_textbox({"hello","world!","trhijsdoijfds","ijherttkjner","kdfgkgjnfd","dskjnfdskjnfsd"}),
+  t=3*60	
 	}
 end
 
@@ -44,6 +43,14 @@ function update_game()
 	if hp == 0 then
 		update_game_over()
 	end
+	if _message!=nil and _message.t!=nil then
+		if _message.t<=0 and btn(5) then
+			_message.t=nil
+		end
+	else
+		move_player()
+	end
+
 end
 
 function update_game_over()
@@ -71,20 +78,20 @@ function draw_hud()
 end
 
 function draw_message()
- if _message.box!=nil then
-  if _message.t!=nil then
-   _message.t-=1
-   local diff=(_message.box.y2-_message.box.y)/8
-	  if _message.t<0 then
-	   _message.box.txt={}
-	  	_message.box.y+=diff/4
-	  	_message.box.y2-=diff
-	  end
-	  if diff>2 then
-	   draw_textbox(_message.box)	
-	  else
-    _message={}
-   end
+ if _message==nil then return end
+ if _message.box!=nil and _message.t!=nil then
+   _message.t-=1	
+			draw_textbox(_message.box)
+ end
+ if _message.box!=nil and _message.t==nil then
+  local diff=(_message.box.y2-_message.box.y)/8
+	 _message.box.txt={}
+	 _message.box.y+=diff/4
+	 _message.box.y2-=diff
+	 if diff>2 then
+	  draw_textbox(_message.box)
+	 else
+	  _message=nil
   end
  end
 end
