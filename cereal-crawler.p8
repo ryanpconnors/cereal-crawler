@@ -6,7 +6,7 @@ __lua__
 -- rougelike dungeon crawler 
 -- thrillho .2021
 
-_message=nil
+_message={}
 _t=nil
 _tile_size=8
 
@@ -43,7 +43,7 @@ function update_game()
 	if hp == 0 then
 		update_game_over()
 	end
-	if _message!=nil and _message.t!=nil then
+	if _message.t!=nil then
 		if _message.t<=0 and btn(5) then
 			_message.t=nil
 		end
@@ -78,10 +78,14 @@ function draw_hud()
 end
 
 function draw_message()
- if _message==nil then return end
  if _message.box!=nil and _message.t!=nil then
-   _message.t-=1	
+   if _message.t >0 then 
+    _message.t-=1
+   end
 			draw_textbox(_message.box)
+ end
+ if _message.t==0 then
+ 	outline_print('❎',_message.box.x2-6,_message.box.y2-3,6,0)
  end
  if _message.box!=nil and _message.t==nil then
   local diff=(_message.box.y2-_message.box.y)/8
@@ -91,9 +95,18 @@ function draw_message()
 	 if diff>2 then
 	  draw_textbox(_message.box)
 	 else
-	  _message=nil
+	  _message={}
   end
  end
+end
+
+function outline_print(s,x,y,c1,c2)
+ dirx={-1,1,0,0,1,1,-1,-1}
+ diry={0,0,-1,1,-1,1,1,-1}
+ for i=1,8 do
+  print(s,x+dirx[i],y+diry[i],c2)
+ end 
+ print(s,x,y,c1)
 end
 -->8
 -- player
@@ -200,11 +213,11 @@ function get_textbox(txt)
 	for str in all(txt) do
 		w=max(w,#str*4+10)
 	end
-	h=#txt*6+8
+	h=#txt*6+4
 	box.x=64-w/2
 	box.x2=64+w/2
 	box.y=64-h/2
-	box.y2=64+h/2
+	box.y2=64+h/2+4
 	return box
 end
 
@@ -215,6 +228,7 @@ function draw_textbox(box)
 	rectfill(x+2,y+2,x2-2,y2-2,0) --box
 	x+=6
 	y+=5
+	clip(x,y,x2-x,y2-y)
 	for i=1,#txt do
 		local str=txt[i]
 		for c=1,#str do
@@ -223,6 +237,7 @@ function draw_textbox(box)
 		end
 		y+=6
 	end
+	clip()
 end
 
 __gfx__
