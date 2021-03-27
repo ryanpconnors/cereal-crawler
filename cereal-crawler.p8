@@ -85,7 +85,7 @@ function draw_message()
 			draw_textbox(_message.box)
  end
  if _message.t==0 then
- 	outline_print('❎',_message.box.x2-6,_message.box.y2-2+sin(time()*2),7,0)
+ 	outline_print('❎',_message.box.x2-6,_message.box.y2-2.9+sin(time()),7,0)
  end
  if _message.box!=nil and _message.t==nil then
   local diff=(_message.box.y2-_message.box.y)/8
