@@ -108,6 +108,7 @@ function outline_print(s,x,y,c1,c2)
  end 
  print(s,x,y,c1)
 end
+
 -->8
 -- player
 
@@ -202,6 +203,7 @@ end
 function flag(x,y)
 	return fget(mget(x,y)) 
 end
+
 -->8
 -- ui
 
@@ -223,16 +225,16 @@ end
 
 function draw_textbox(box)
 	local x,y,x2,y2,txt=box.x,box.y,box.x2,box.y2,box.txt
-	rectfill(x,y,x2,y2,0) -- outer frame 
+	rectfill(x,y,x2,y2,0)         -- outer frame 
 	rectfill(x+1,y+1,x2-1,y2-1,7) -- inner frame
-	rectfill(x+2,y+2,x2-2,y2-2,0) --box
+	rectfill(x+2,y+2,x2-2,y2-2,0) -- box
 	x+=6
 	y+=5
 	clip(x,y,x2-x,y2-y)
 	for i=1,#txt do
 		local str=txt[i]
 		for c=1,#str do
-			-- todo: print char by char
+		 -- todo: print char by char
 			print(sub(str,c,c),x+(c-1)*4,y,7)
 		end
 		y+=6
