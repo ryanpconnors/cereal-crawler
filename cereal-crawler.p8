@@ -31,7 +31,7 @@ end
 function start_game()
 	init_player(007,014,⬆️)
 	_message = {
-		box=get_textbox({"hello","world!","trhijsdoijfds","ijherttkjner","kdfgkgjnfd","dskjnfdskjnfsd"}),
+		box=get_textbox({"hello","world!"}),
   t=3*60	
 	}
 end
