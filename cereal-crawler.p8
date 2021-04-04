@@ -43,7 +43,7 @@ function update_game()
 	if hp == 0 then
 		update_game_over()
 	end
-	if _message.t!=nil then
+	if _message.t then
 		if _message.t<=0 and btn(5) then
 			_message.t=nil
 		end
@@ -78,16 +78,16 @@ function draw_hud()
 end
 
 function draw_message()
- if _message.box!=nil and _message.t!=nil then
+ if _message.box and _message.t then
    if _message.t >0 then 
     _message.t-=1
    end
 			draw_textbox(_message.box)
  end
  if _message.t==0 then
- 	outline_print('❎',_message.box.x2-6,_message.box.y2-2.9+sin(time()),7,0)
+ 	print_outline('❎',_message.box.x2-6,_message.box.y2-2.9+sin(time()),7,0)
  end
- if _message.box!=nil and _message.t==nil then
+ if _message.box and _message.t==nil then
   local diff=(_message.box.y2-_message.box.y)/8
 	 _message.box.txt={}
 	 _message.box.y+=diff/4
@@ -100,7 +100,8 @@ function draw_message()
  end
 end
 
-function outline_print(s,x,y,c1,c2)
+-- prints a black outline around 
+function print_outline(s,x,y,c1,c2)
  dirx={-1,1,0,0,1,1,-1,-1}
  diry={0,0,-1,1,-1,1,1,-1}
  for i=1,8 do
@@ -225,9 +226,8 @@ end
 
 function draw_textbox(box)
 	local x,y,x2,y2,txt=box.x,box.y,box.x2,box.y2,box.txt
-	rectfill(x,y,x2,y2,0)         -- outer frame 
-	rectfill(x+1,y+1,x2-1,y2-1,7) -- inner frame
-	rectfill(x+2,y+2,x2-2,y2-2,0) -- box
+	rectfill(x,y,x2,y2,0) 				-- draw box
+	rect(x+1,y+1,x2-1,y2-1,7) -- draw frame
 	x+=6
 	y+=5
 	clip(x,y,x2-x,y2-y)
