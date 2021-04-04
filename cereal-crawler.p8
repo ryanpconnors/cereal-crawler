@@ -50,7 +50,6 @@ function update_game()
 	else
 		move_player()
 	end
-
 end
 
 function update_game_over()
